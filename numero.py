@@ -116,7 +116,7 @@ LATIN_CHALDEAN_SET = [
 ]
 
 
-def calcBaseNumber_Pythagoras(summing_elements = [], break_master_nmbr = False):
+def calcBaseNumber_Pythagoras(summing_elements = [], break_master_nmbr = False, verbose = True):
 # Calculate base number from summing elements
 	first_sum = -1
 	calc_error = False
@@ -127,7 +127,8 @@ def calcBaseNumber_Pythagoras(summing_elements = [], break_master_nmbr = False):
 		for n in range(len(tmp_sum)):
 			result = result + tmp_sum[n]
 
-		printSummingResult(tmp_sum, result)
+		if verbose:
+			printSummingResult(tmp_sum, result)
 
 		
 		if first_sum == -1:
@@ -148,7 +149,8 @@ def calcBaseNumber_Pythagoras(summing_elements = [], break_master_nmbr = False):
 		for k in str(result):
 			tmp_sum.append(int(k))
 
-		print('...')
+		if verbose:
+			print('...')
 
 	# Return result
 	if not calc_error:
@@ -156,7 +158,7 @@ def calcBaseNumber_Pythagoras(summing_elements = [], break_master_nmbr = False):
 	else:
 		return -1, -1
 	
-def calcBaseNumber_SumEach(summing_elements = [], break_master_nmbr = False):
+def calcBaseNumber_SumEach(summing_elements = [], break_master_nmbr = False,  verbose = True):
 # Calculate base number from sum all single digit values
 	first_sum = -1
 	calc_error = False
@@ -171,7 +173,8 @@ def calcBaseNumber_SumEach(summing_elements = [], break_master_nmbr = False):
 		for n in range(len(tmp_sum)):
 			result = result + tmp_sum[n]
 
-		printSummingResult(tmp_sum, result)
+		if verbose:
+			printSummingResult(tmp_sum, result)
 
 		
 		if first_sum == -1:
@@ -185,14 +188,16 @@ def calcBaseNumber_SumEach(summing_elements = [], break_master_nmbr = False):
 
 		check_master_nmbr = checkMasterNumber(result)
 		if check_master_nmbr & break_master_nmbr:
+			if verbose:
+				print('Master number detected!')
 			break
 
 		# generate new summing elements list for next loop
 		tmp_sum = []
 		for k in str(result):
 			tmp_sum.append(int(k))
-
-		print('...')
+		if verbose:
+			print('...')
 
 	# Return result
 	if not calc_error:
@@ -208,10 +213,7 @@ def checkMasterNumber(value):
 
 	master_number = True
 	for n in range(len(tmp_list)):
-		master_number = master_number and tmp_list[0] == tmp_list[n] # set master_number false when char[n] <> char[0]
-
-	if master_number:
-		print('Master number detected!')
+		master_number = master_number and tmp_list[0] == tmp_list[n] # set master_number false when char[n] <> char[0]	
 
 	return master_number
 	
@@ -363,20 +365,24 @@ while True:
 		print('\n\r')
 		print(' -> Input string: ', my_input)
 
-		# print input & values aligned
+	# print input & values aligned
 		#print(' -> Valid string', input_converted)
 		#print(' -> Mapped numbers', input_mapped)
 		print(' -> Input mapping:')
 		fb_str_input =''
 		fb_str_map =''
 		for n in range(len(input_mapped)):
+		# CYCLE THROUGH MAPPED INPUT
+			# ADD CHARACTER VALUE TO PRINT BUFFER
 			fb_str_map += str(input_mapped[n])
 			fb_str_map += ','
 			fb_str_map += ' '
 
+			# ADD CHARACTER TO PRINT BUFFER
 			fb_str_input += str(input_converted[n])
 			fb_str_input += ','
 			for m in range(len( str(input_mapped[n]) )):
+				# PAD WITH SPACES IF VALUE HAS MORE CHARACTERS
 				fb_str_input += ' '
 			
 			if ( (n+1)==len(input_mapped) ):
