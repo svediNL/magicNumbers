@@ -1,4 +1,5 @@
 import math
+from operator import itemgetter
 
 LATIN_SET = [
  ['A', 1],
@@ -227,6 +228,112 @@ def printSummingResult(summing_elements =[], result = -1):
 	print(tmp_str)
 	#print('\n\rSum of \n\r', input_list, '\n\r = ', result)
 
+def CharsToValues(input_string = [], input_alphabet = [[]]):
+	tmp_mapping = []
+	for n in range(len(input_string)):
+		# CYCLE THOUGH CHARS
+			try:
+			# CHECK IF CHAR IS ALREADY A NUMBER
+				int(input_string[n])
+			except:
+			# CHAR IS NOT A NUMBER
+				# CHECK IF CHAR IS IN ALPHABET
+				for m in range(len(input_alphabet)):
+					if input_string[n] == input_alphabet[m][0]:
+					# CHAR FOUND
+						# ADD VALUE TO SUMMING BUFFER
+						tmp_mapping.append(int(input_alphabet[m][1]))
+						break
+					elif m == len(input_alphabet)-1:
+					# CHAR NOT FOUND, ADD 0
+						tmp_mapping.append(0)
+			else:
+			# CHAR IS NUMBER
+				tmp_mapping.append(int(input_string[n])) # CONVERT CHAR TO INT & ADD TO BUFFER
+
+
+	return tmp_mapping
+
+def reverseCalculation(baseNumber = 1, depth = 3, verbose = True):
+	#build test_array
+	test_string = []
+	test_index = []
+	for n in range(depth):
+		test_string.append('')
+		test_index.append(-1)
+	
+	test_array = CharsToValues(test_string, alphabet_set_sorted)
+	test_sum = 0
+	result_array = []
+	result_array_str =[]
+	tmp_dot = 1
+
+	end_reached = False
+	while not end_reached:
+		# CALCUATE SUM
+		#test_sum = 0
+		#for n in range(depth):
+		#	test_sum += test_array[n]
+		test_sum, intial_sum = calcBaseNumber_Pythagoras(test_array, False, verbose)
+
+		#print('')
+		#print('test index: ', test_index)
+		#print('test string: ', test_string)
+		#print('test sum: ', test_array)
+		#print('test sum result: ', test_sum)
+
+		if 	test_sum == baseNumber:
+		# match found
+			result_array.append(test_array)
+			tmp_str = ''
+			for n in test_string:
+				tmp_str += n
+			result_array_str.append(tmp_str)
+
+			if verbose:
+				print(result_array_str)
+				print('...')
+		
+	# try new number
+		# increment index counter(s)
+		tmp_inc = depth-1
+		test_index[tmp_inc] += 1
+		while tmp_inc > 0:
+		# CHECK INCREMENT
+			if test_index[tmp_inc] > len(alphabet_set_sorted)-1:
+				# LSB REACHED MAX INDEX
+					if tmp_inc > 0:
+					# INCREMENT NEXT MSB
+						test_index[tmp_inc-1] += 1
+						test_index[tmp_inc] = 0
+						
+			if alphabet_set_sorted[n][0]
+
+			if test_index[0] > len(alphabet_set_sorted)-1:
+			# MSB REACHED MAX INDEX
+				end_reached = True
+				break
+
+			tmp_inc -= 1
+
+		if not end_reached:
+		# set new string / number combination
+			test_string = []
+			for n in test_index:
+				if n >= 0:
+					test_string.append(alphabet_set_sorted[n][0])
+				else:
+					test_string.append('')
+
+			test_array = CharsToValues(test_string, alphabet_set_sorted)
+
+		if not verbose:
+			tmp_dot += 1
+			if tmp_dot > 1000:
+				tmp_dot = 1
+				print('.', end='', flush=True)
+	return result_array_str
+	
 
 config_string = ''	# String for printing the result configuration		
 config_reset = True
@@ -237,6 +344,12 @@ while True:
 	if config_reset:
 		config_string = ''	# String for printing the result configuration	
 		config_reset = False	
+
+		try:
+			config_direction = input("Select direction: \n\r [1] Phrase to base number \n\r [2] Base number to phrase \n\r -> ")
+			(int(config_direction) <0)
+		except:
+			config_direction = 1
 
 		try:
 			config_alphabet	= input("Select alphabet: \n\r [1] Latin \n\r [2] Greek \n\r [3] Latin Classic (no J & U) \n\r -> ")
@@ -305,6 +418,8 @@ while True:
 		else:
 			alphabet_set = LATIN_SET
 			config_string += 'Incremental counting, '
+
+		alphabet_set_sorted = sorted(alphabet_set, key=itemgetter(1))
 
 # RETURN CHARACTER TO NUMBER MAPPING
 	print('\n\r\n\r')
@@ -404,26 +519,32 @@ while True:
 # CALCULATE FINAL VALUE
 		print('\n\r')
 		print('================= C A L C U L A T E =================')
-		if int(config_calc_method) == 1:
-		# Classic Pythagorean method
-			final_sum, intial_sum = calcBaseNumber_Pythagoras(input_mapped, False)
-		elif int(config_calc_method) == 2:
-		# Pythagorean method with Master Numbers
-			final_sum, intial_sum = calcBaseNumber_Pythagoras(input_mapped, True)
-		elif int(config_calc_method) == 3:
-		# Sum each number individually
-			final_sum, intial_sum = calcBaseNumber_SumEach(input_mapped, False)
+		if int(config_direction) == 2:
+			final_word_list = reverseCalculation(int(my_input), depth = 6, verbose = False)
+		else:
+			if int(config_calc_method) == 1:
+			# Classic Pythagorean method
+				final_sum, intial_sum = calcBaseNumber_Pythagoras(input_mapped, False, True)
+			elif int(config_calc_method) == 2:
+			# Pythagorean method with Master Numbers
+				final_sum, intial_sum = calcBaseNumber_Pythagoras(input_mapped, True, True)
+			elif int(config_calc_method) == 3:
+			# Sum each number individually
+				final_sum, intial_sum = calcBaseNumber_SumEach(input_mapped, False, True)
 
 
 
 # PRINT RESULTS
 		print('\n\r\n\r=================== R E S U L T S ===================')
 		print('')
-		print('Input:\t\t', input_string)
-		print('Initial sum:\t', intial_sum)
-		print('Final value:\t', final_sum)
-		print('')
-		print('using:\t', config_string)
+		if int(config_direction) == 2:
+			print(final_word_list)
+		else:
+			print('Input:\t\t', input_string)
+			print('Initial sum:\t', intial_sum)
+			print('Final value:\t', final_sum)
+			print('')
+			print('using:\t', config_string)
 		print('')
 		print('=====================================================\n\r\n\r')
 		any_key = input('\tEnter Z to reset the alpabet & numbering configuration\n\r\tEnter Q to exit program loop\n\r\tEnter any other key to try again\n\r\t-> ')
