@@ -246,7 +246,118 @@ def reverseCalculation(baseNumber = 1, depth = 3, verbose = True):
 
 	return result_array_str # ALL POSSIBLE STRINGS HAVE BEEN CHECKED
 	
+
+
+def reverseCalculationShortcut(baseNumber = 1, depth = 3, verbose = True):
+	#build test_array
+	test_string = []	# list for testing alphabet characters
+	test_index = []		# list for testing aphabet index
+	test_array = []
+	for n in range(depth):
+	# fill lists with empty values
+		test_string.append('')
+		test_index.append(0)
+		test_array.append(0)
 	
+	test_sum = 0
+	result_array =[]
+	tmp_dot = 1
+
+	end_reached = False
+	while not end_reached:
+	# TRY NEW VALUE
+		# INCREMENT INDEX COUNTERS
+		tmp_inc = depth-1			# tmp_inc = LSB index
+		test_index[tmp_inc] += 1 	# increment LSB
+
+		# CHECK IF INCREMENT IS VALID
+		if tmp_inc == 0 and test_index[0] > len(new_sort_val)-1:
+			end_reached = True
+		else:
+			while tmp_inc > 0:	
+				if test_index[tmp_inc] > len(new_sort_val)-1:
+				# LSB REACHED MAX INDEX -> RESET TO 0, INCREMENT NEXT ONE UP
+					if tmp_inc > 0:
+					# INCREMENT NEXT LSB (RESET CURRENT LSB)
+						test_index[tmp_inc-1] += 1
+						test_index[tmp_inc] = 0
+							
+				if test_index[0] > len(new_sort_val)-1:
+				# MSB REACHED MAX INDEX -> EVERYTHING TESTED
+					end_reached = True
+					break
+
+				tmp_inc -= 1 	# DECREMENT tmp_inc -> CHECK LSB ONE UP
+
+
+
+		if not end_reached:
+		# set new string / number combination
+			for n in range(depth):
+				test_array[n] = new_sort_val[test_index[n]]
+
+	# CALCUATE SUM
+		if not end_reached:
+			#test_sum = 0
+			#for n in range(depth):
+			#	test_sum += test_array[n]
+			test_sum, intial_sum = calcBaseNumber_Pythagoras(test_array, False, False, False)
+
+			if not verbose:
+				tmp_dot += 1
+				if tmp_dot > 1000:
+					tmp_dot = 1
+					print('.', end='', flush=True)
+
+
+			if 	test_sum == baseNumber:
+			# match found
+
+				# init index counter
+				result_index = []
+				for n in range(len(test_index)):
+					result_index.append(0)
+
+				results_collected = False
+				while not results_collected:
+					# BUILD POSSIBLE STRING
+					tmp_str = '' 
+					for n in range(depth):
+						tmp_str += new_sort_char[ test_index[n] ][ result_index[n] ]
+					result_array.append(tmp_str)
+
+					# INCREMENT COUNTER
+					result_index[depth-1] += 1
+					for n in reversed(range(depth)):
+						# Check if increment is valid
+						if result_index[n] > len( new_sort_char[test_index[n]] )-1:
+						# LSB REACHED MAX INDEX -> RESET TO 0, INCREMENT NEXT ONE UP
+							if n > 0:
+							# INCREMENT NEXT LSB (RESET CURRENT LSB)
+								result_index[n-1] += 1
+								result_index[n] = 0
+
+
+						if result_index[0] > len( new_sort_char[test_index[n]] )-1:
+						# MSB REACHED MAX INDEX -> EVERYTHING TESTED
+							results_collected = True
+							break
+
+
+				if verbose:
+					print('')
+					print('test index: ', test_index)
+					print('test string: ', test_string)
+					print('test sum: ', test_array)
+					print('test sum result: ', test_sum)
+					print(result_array)
+					print('...')
+					print('')
+
+	return result_array # ALL POSSIBLE STRINGS HAVE BEEN CHECKED
+	
+
+
 
 config_string = ''	# String for printing the result configuration		
 config_reset = True
@@ -337,6 +448,38 @@ while True:
 
 		alphabet_set_sorted = sorted(alphabet_set, key=itemgetter(1))
 
+		new_sort_val = []		# list of unique values
+		new_sort_char = []		# list of characters per unique value
+		for i in range(len(alphabet_set)):
+			tmp_new_sort_val = []
+			tmp_new_sort_val.append(alphabet_set[i][1])	
+			tmp_new_sort_res = calcBaseNumber_Pythagoras(tmp_new_sort_val, False, False, True)
+			if not ( tmp_new_sort_res in new_sort_val):
+				tmp_new_sort_val = []
+				tmp_new_sort_val.append(alphabet_set[i][1])
+				new_sort_val.append( calcBaseNumber_Pythagoras(tmp_new_sort_val, False, False, True) )
+				new_sort_char.append([])
+
+			if (tmp_new_sort_res in new_sort_val):
+				j = new_sort_val.index(tmp_new_sort_res)
+				new_sort_char[j].append(alphabet_set[i][0])
+
+
+#			if not ( alphabet_set[i][1] in new_sort_val):
+#				new_sort_val.append( alphabet_set[i][1] )
+#				new_sort_char.append([])
+#
+#			if (alphabet_set[i][1] in new_sort_val):
+#				j = new_sort_val.index(tmp_new_sort_res)
+#				new_sort_char[j].append(alphabet_set[i][0])
+
+		print(alphabet_set_sorted)
+		print(new_sort_val)
+		print(new_sort_char)
+		print(new_sort_char[0])
+		print(new_sort_char[0][0])
+
+
 # RETURN CHARACTER TO NUMBER MAPPING
 	print('\n\r\n\r')
 	# print('#---------------------------------------------------#')
@@ -398,8 +541,8 @@ while True:
 	except:
 	# RAISE ERROR, TRY AGAIN
 		print('... String Error')
-
 	else:
+	# STRING VALID
 # PRINT INITIAL INPUT CONVERSION
 		#print('#---------------------------------------------------#')
 		print('\n\r')
@@ -445,7 +588,7 @@ while True:
 		print('\n\r')
 		print('================= C A L C U L A T E =================')
 		if int(config_direction) == 2:
-			final_word_list = reverseCalculation(int(my_input), depth = config_depth, verbose = False)
+			final_word_list = reverseCalculationShortcut(int(my_input), depth = config_depth, verbose = False)
 		else:
 			if int(config_calc_method) == 1:
 			# Classic Pythagorean method
