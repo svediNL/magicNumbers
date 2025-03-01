@@ -354,7 +354,7 @@ def reverseCalculationShortcut(baseNumber = 1, depth = 3, verbose = True):
 					print('...')
 					print('')
 
-	return result_array # ALL POSSIBLE STRINGS HAVE BEEN CHECKED
+	return sorted(result_array) # ALL POSSIBLE STRINGS HAVE BEEN CHECKED
 	
 
 
