@@ -4,7 +4,7 @@ from operator import itemgetter
 from alphabet import *
 
 
-def calcBaseNumber_Pythagoras(summing_elements = [], break_master_nmbr = False, verbose = True):
+def calcBaseNumber_Pythagoras(summing_elements = [], break_master_nmbr = False, verbose = True, result_only = False):
 # Calculate base number from summing elements
 	first_sum = -1
 	calc_error = False
@@ -41,10 +41,16 @@ def calcBaseNumber_Pythagoras(summing_elements = [], break_master_nmbr = False, 
 			print('...')
 
 	# Return result
-	if not calc_error:
-		return result, first_sum
+	if result_only:
+		if not calc_error:
+			return result
+		else:
+			return -1
 	else:
-		return -1, -1
+		if not calc_error:
+			return result, first_sum
+		else:
+			return -1, -1
 	
 def calcBaseNumber_SumEach(summing_elements = [], break_master_nmbr = False,  verbose = True):
 # Calculate base number from sum all single digit values
@@ -143,13 +149,15 @@ def CharsToValues(input_string = [], input_alphabet = [[]]):
 
 def reverseCalculation(baseNumber = 1, depth = 3, verbose = True):
 	#build test_array
-	test_string = []
-	test_index = []
+	test_string = []	# list for testing alphabet characters
+	test_index = []		# list for testing aphabet index
 	for n in range(depth):
+	# fill lists with empty values
 		test_string.append('')
 		test_index.append(-1)
 	
 	test_array = CharsToValues(test_string, alphabet_set_sorted)
+
 	test_sum = 0
 	result_array = []
 	result_array_str =[]
@@ -157,51 +165,33 @@ def reverseCalculation(baseNumber = 1, depth = 3, verbose = True):
 
 	end_reached = False
 	while not end_reached:
-		# CALCUATE SUM
-		#test_sum = 0
-		#for n in range(depth):
-		#	test_sum += test_array[n]
-		test_sum, intial_sum = calcBaseNumber_Pythagoras(test_array, False, verbose)
 
-		#print('')
-		#print('test index: ', test_index)
-		#print('test string: ', test_string)
-		#print('test sum: ', test_array)
-		#print('test sum result: ', test_sum)
+	# TRY NEW VALUE
+		# INCREMENT INDEX COUNTERS
+		tmp_inc = depth-1			# tmp_inc = LSB index
+		test_index[tmp_inc] += 1 	# increment LSB
 
-		if 	test_sum == baseNumber:
-		# match found
-			result_array.append(test_array)
-			tmp_str = ''
-			for n in test_string:
-				tmp_str += n
-			result_array_str.append(tmp_str)
-
-			if verbose:
-				print(result_array_str)
-				print('...')
-		
-	# try new number
-		# increment index counter(s)
-		tmp_inc = depth-1
-		test_index[tmp_inc] += 1
-		while tmp_inc > 0:
-		# CHECK INCREMENT
-			if test_index[tmp_inc] > len(alphabet_set_sorted)-1:
-				# LSB REACHED MAX INDEX
+		# CHECK IF INCREMENT IS VALID
+		if tmp_inc == 0 and test_index[0] > len(alphabet_set_sorted)-1:
+			end_reached = True
+		else:
+			while tmp_inc > 0:	
+				if test_index[tmp_inc] > len(alphabet_set_sorted)-1:
+				# LSB REACHED MAX INDEX -> RESET TO 0, INCREMENT NEXT ONE UP
 					if tmp_inc > 0:
-					# INCREMENT NEXT MSB
+					# INCREMENT NEXT LSB (RESET CURRENT LSB)
 						test_index[tmp_inc-1] += 1
 						test_index[tmp_inc] = 0
-						
-			if alphabet_set_sorted[n][0]
+							
+				#if alphabet_set_sorted[n][0]
+				if test_index[0] > len(alphabet_set_sorted)-1:
+				# MSB REACHED MAX INDEX -> EVERYTHING TESTED
+					end_reached = True
+					break
 
-			if test_index[0] > len(alphabet_set_sorted)-1:
-			# MSB REACHED MAX INDEX
-				end_reached = True
-				break
+				tmp_inc -= 1 	# DECREMENT tmp_inc -> CHECK LSB ONE UP
 
-			tmp_inc -= 1
+
 
 		if not end_reached:
 		# set new string / number combination
@@ -214,12 +204,48 @@ def reverseCalculation(baseNumber = 1, depth = 3, verbose = True):
 
 			test_array = CharsToValues(test_string, alphabet_set_sorted)
 
-		if not verbose:
-			tmp_dot += 1
-			if tmp_dot > 1000:
-				tmp_dot = 1
-				print('.', end='', flush=True)
-	return result_array_str
+	# CALCUATE SUM
+		if not end_reached:
+			#test_sum = 0
+			#for n in range(depth):
+			#	test_sum += test_array[n]
+			test_sum, intial_sum = calcBaseNumber_Pythagoras(test_array, False, False, False)
+
+			if not verbose:
+				tmp_dot += 1
+				if tmp_dot > 1000:
+					tmp_dot = 1
+					print('.', end='', flush=True)
+
+			''' moved verbose printing
+			else:
+				print('')
+				print('test index: ', test_index)
+				print('test string: ', test_string)
+				print('test sum: ', test_array)
+				print('test sum result: ', test_sum)
+			'''
+
+			if 	test_sum == baseNumber:
+			# match found
+				result_array.append(test_array)
+				tmp_str = ''
+				for n in test_string:
+					tmp_str += n
+				result_array_str.append(tmp_str)
+
+				if verbose:
+					print('')
+					print('test index: ', test_index)
+					print('test string: ', test_string)
+					print('test sum: ', test_array)
+					print('test sum result: ', test_sum)
+					print(result_array_str)
+					print('...')
+					print('')
+
+	return result_array_str # ALL POSSIBLE STRINGS HAVE BEEN CHECKED
+	
 	
 
 config_string = ''	# String for printing the result configuration		
@@ -423,10 +449,10 @@ while True:
 		else:
 			if int(config_calc_method) == 1:
 			# Classic Pythagorean method
-				final_sum, intial_sum = calcBaseNumber_Pythagoras(input_mapped, False, True)
+				final_sum, intial_sum = calcBaseNumber_Pythagoras(input_mapped, False, True, False)
 			elif int(config_calc_method) == 2:
 			# Pythagorean method with Master Numbers
-				final_sum, intial_sum = calcBaseNumber_Pythagoras(input_mapped, True, True)
+				final_sum, intial_sum = calcBaseNumber_Pythagoras(input_mapped, True, True, False)
 			elif int(config_calc_method) == 3:
 			# Sum each number individually
 				final_sum, intial_sum = calcBaseNumber_SumEach(input_mapped, False, True)
