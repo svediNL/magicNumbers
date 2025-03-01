@@ -250,10 +250,13 @@ while True:
 		except:
 			config_nmbr_mapping = 1
 
-		try:
-			input_calc_method	= input("Select method: \n\r [1] Pythagorean \n\r [2] Pythagorean with Master Numbers \n\r [3] Sum individual numbers (eg. 2+34 => 2+3+4) \n\r -> ")
-			config_calc_method = int(input_calc_method)
-		except:
+		if config_direction:
+			try:
+				input_calc_method	= input("Select method: \n\r [1] Pythagorean \n\r [2] Pythagorean with Master Numbers \n\r [3] Sum individual numbers (eg. 2+34 => 2+3+4) \n\r -> ")
+				config_calc_method = int(input_calc_method)
+			except:
+				config_calc_method = 1
+		else:
 			config_calc_method = 1
 
 		# SET / GENERATE ALPHABET
@@ -331,6 +334,15 @@ while True:
 # GET INPUT STRING
 	my_input = input("Enter string: ")
 
+
+	try:
+		config_depth = input("Enter max number of characters in string (larger values lead to exponentially longer calculation time: \n\r -> ")
+		(int(config_depth) <0)
+	except:
+		config_depth = 1
+	else:
+		config_depth = abs(int(config_depth))
+
 	input_converted = '' # STRING OF CHARACTERS THAT ARE VALID
 	input_mapped = [] # ARRAY OF VALUES TO CALCULATE BASE NUMBER
 	try:
@@ -407,7 +419,7 @@ while True:
 		print('\n\r')
 		print('================= C A L C U L A T E =================')
 		if int(config_direction) == 2:
-			final_word_list = reverseCalculation(int(my_input), depth = 6, verbose = False)
+			final_word_list = reverseCalculation(int(my_input), depth = config_depth, verbose = False)
 		else:
 			if int(config_calc_method) == 1:
 			# Classic Pythagorean method
