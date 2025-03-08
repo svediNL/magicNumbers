@@ -368,10 +368,14 @@ def filterWords(input_array = []):
 	print('Checking MerriamWebster.com...')
 	output_array = []
 	for n in input_array:
-		myMeaning = dictionary.meaning('en', n)#, dictionary=DICT_MW)
-		if 	not (myMeaning[0] == [] and myMeaning[1] == '' and myMeaning[2] == ''):
-			print(myMeaning)
-			output_array.append(n)
+		try:
+			myMeaning = dictionary.meaning('en', n)#, dictionary=DICT_MW)
+			if 	myMeaning[0] != [] and (myMeaning[1] != '' or myMeaning[2] != ''):
+				print(n, ':\n\r', myMeaning, '\n\r')
+				output_array.append(n)
+		except KeyboardInterrupt: 
+			print('')
+			break
 	return output_array
 
 
