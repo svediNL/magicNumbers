@@ -322,12 +322,14 @@ def reverseCalculationShortcut(baseNumber = 1, depth = 3, verbose = True):
 					result_index.append(0)
 
 				results_collected = False
+				results_added = []
 				while not results_collected:
 					# BUILD POSSIBLE STRING
 					tmp_str = '' 
 					for n in range(depth):
 						tmp_str += new_sort_char[ test_index[n] ][ result_index[n] ]
 					result_array.append(tmp_str)
+					results_added.append(tmp_str)
 
 					# INCREMENT COUNTER
 					result_index[depth-1] += 1
@@ -348,17 +350,26 @@ def reverseCalculationShortcut(baseNumber = 1, depth = 3, verbose = True):
 
 
 				if verbose:
-					print('')
-					print('test index: ', test_index)
-					print('test string: ', test_string)
-					print('test sum: ', test_array)
-					print('test sum result: ', test_sum)
-					print(result_array)
-					print('...')
-					print('')
-				else:
-					#just print new line to for dots
-					print('')
+					for n in results_added:
+						print('     vvvvvvvvvvv     ')
+						print('Result added: ', n)
+						tmp_array = []
+						for letter in n:
+							tmp_array.append(letter)
+						calcBaseNumber_Pythagoras(CharsToValues(tmp_array, alphabet_set), False, True, False)
+						print('     ^^^^^^^^^^^     ')
+
+					#print('')
+					#print('test index: ', test_index)
+					#print('test string: ', test_string)
+					#print('test sum: ', test_array)
+					#print('test sum result: ', test_sum)
+					#print(result_array)
+					#print('...')
+					#print('')
+
+	if not verbose:
+		print('') #just print new line to for dots
 
 	return sorted(result_array) # ALL POSSIBLE STRINGS HAVE BEEN CHECKED
 	
@@ -387,6 +398,7 @@ print(' \n\r Start Loop...\n\r')
 while True:
 # SET CALCULATION CONFIGURATION
 	if config_reset:
+	# RESET CONFIGURATION
 		config_string = ''	# String for printing the result configuration	
 		config_reset = False	
 
@@ -442,7 +454,7 @@ while True:
 			config_calc_method = 1
 			config_string += 'Pythagorean method'
 
-# GENERATE CHARACTER TO NUMBER MAPPING
+	# GENERATE CHARACTER TO NUMBER MAPPING
 		if int(config_nmbr_mapping) == 1:
 			config_string += 'Latin counting, '
 			for n in range( len(alphabet_set) ):
@@ -485,23 +497,15 @@ while True:
 				j = new_sort_val.index(tmp_new_sort_res)
 				new_sort_char[j].append(alphabet_set[i][0])
 
-
-#			if not ( alphabet_set[i][1] in new_sort_val):
-#				new_sort_val.append( alphabet_set[i][1] )
-#				new_sort_char.append([])
-#
-#			if (alphabet_set[i][1] in new_sort_val):
-#				j = new_sort_val.index(tmp_new_sort_res)
-#				new_sort_char[j].append(alphabet_set[i][0])
-
-		print(alphabet_set_sorted)
-		print(new_sort_val)
-		print(new_sort_char)
-		print(new_sort_char[0])
-		print(new_sort_char[0][0])
+	# PRINT RESULT
+		#print(alphabet_set_sorted)
+		#print(new_sort_val)
+		#print(new_sort_char)
+		#print(new_sort_char[0])
+		#print(new_sort_char[0][0])
 
 
-# RETURN CHARACTER TO NUMBER MAPPING
+# RETURN WORKING SET CHARACTER TO NUMBER MAPPING
 	print('\n\r\n\r')
 	# print('#---------------------------------------------------#')
 	print('=====================================================')
@@ -522,16 +526,22 @@ while True:
 	print('\n\r')
 
 # GET INPUT STRING
-	my_input = input("Enter string: ")
-
-
-	try:
-		config_depth = input("Enter max number of characters in string (larger values lead to exponentially longer calculation time: \n\r -> ")
-		(int(config_depth) <0)
-	except:
-		config_depth = 1
+	if int(config_direction) == 2:
+		my_input = input("Enter base number: ")
 	else:
-		config_depth = abs(int(config_depth))
+		my_input = input("Enter string: ")
+
+
+	if int(config_direction) == 2:
+		try:
+			config_depth = input("Enter number of characters in string: ")
+			(int(config_depth) <0)
+		except:
+			config_depth = 1
+		else:
+			config_depth = abs(int(config_depth))
+	else:
+		config_depth = 1
 
 	input_converted = '' # STRING OF CHARACTERS THAT ARE VALID
 	input_mapped = [] # ARRAY OF VALUES TO CALCULATE BASE NUMBER
@@ -609,8 +619,7 @@ while True:
 		print('\n\r')
 		print('================= C A L C U L A T E =================')
 		if int(config_direction) == 2:
-			values_found = reverseCalculationShortcut(int(my_input), depth = config_depth, verbose = False)
-			final_word_list = filterWords(values_found)
+			values_found = reverseCalculationShortcut(int(my_input), depth = config_depth, verbose = True)
 		else:
 			if int(config_calc_method) == 1:
 			# Classic Pythagorean method
@@ -628,8 +637,10 @@ while True:
 		print('\n\r\n\r=================== R E S U L T S ===================')
 		print('')
 		if int(config_direction) == 2:
-			print(values_found)
-			print(final_word_list)
+			print('Working character combinations: \n\r', values_found, '\n\r')
+
+			final_word_list = filterWords(values_found)
+			print('Valid words in Merriam-Webster: \n\r', final_word_list)
 		else:
 			print('Input:\t\t', input_string)
 			print('Initial sum:\t', intial_sum)
