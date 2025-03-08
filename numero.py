@@ -3,6 +3,9 @@ from operator import itemgetter
 
 from alphabet import *
 
+from PyMultiDictionary import MultiDictionary, DICT_MW
+
+dictionary = MultiDictionary()
 
 def calcBaseNumber_Pythagoras(summing_elements = [], break_master_nmbr = False, verbose = True, result_only = False):
 # Calculate base number from summing elements
@@ -353,9 +356,23 @@ def reverseCalculationShortcut(baseNumber = 1, depth = 3, verbose = True):
 					print(result_array)
 					print('...')
 					print('')
+				else:
+					#just print new line to for dots
+					print('')
 
 	return sorted(result_array) # ALL POSSIBLE STRINGS HAVE BEEN CHECKED
 	
+
+
+def filterWords(input_array = []):
+	print('Checking MerriamWebster.com...')
+	output_array = []
+	for n in input_array:
+		myMeaning = dictionary.meaning('en', n)#, dictionary=DICT_MW)
+		if 	not (myMeaning[0] == [] and myMeaning[1] == '' and myMeaning[2] == ''):
+			print(myMeaning)
+			output_array.append(n)
+	return output_array
 
 
 
@@ -588,7 +605,8 @@ while True:
 		print('\n\r')
 		print('================= C A L C U L A T E =================')
 		if int(config_direction) == 2:
-			final_word_list = reverseCalculationShortcut(int(my_input), depth = config_depth, verbose = False)
+			values_found = reverseCalculationShortcut(int(my_input), depth = config_depth, verbose = False)
+			final_word_list = filterWords(values_found)
 		else:
 			if int(config_calc_method) == 1:
 			# Classic Pythagorean method
@@ -606,6 +624,7 @@ while True:
 		print('\n\r\n\r=================== R E S U L T S ===================')
 		print('')
 		if int(config_direction) == 2:
+			print(values_found)
 			print(final_word_list)
 		else:
 			print('Input:\t\t', input_string)
