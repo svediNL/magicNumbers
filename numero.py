@@ -418,7 +418,7 @@ while True:
 
 		# GET NUMBERING SYSTEM
 		try:
-			config_nmbr_mapping	= input("Select counting system: \n\r [1] Latin (1..9) \n\r [2] Greek (1..9, 10..90, ...)\n\r [3] Incremental (1, 2, 3, ..., n) \n\r [4] Chaldean \n\r -> ")
+			config_nmbr_mapping	= input("Select counting system: \n\r [1] Latin (1..9) \n\r [2] Greek (1..9, 10..90, ...)\n\r [3] Incremental (1, 2, 3, ..., n) \n\r [4] Chaldean \n\r [5] Latin greek equivalent \n\r -> ")
 			int(config_nmbr_mapping)
 		except:
 			config_nmbr_mapping = 1
