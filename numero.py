@@ -402,24 +402,28 @@ while True:
 		config_string = ''	# String for printing the result configuration	
 		config_reset = False	
 
+		# GET CALCULATION DIRECTION
 		try:
 			config_direction = input("Select direction: \n\r [1] Phrase to base number \n\r [2] Base number to phrase \n\r -> ")
 			(int(config_direction) <0)
 		except:
 			config_direction = 1
 
+		# GET ALPHABET TYPE
 		try:
 			config_alphabet	= input("Select alphabet: \n\r [1] Latin \n\r [2] Greek \n\r [3] Latin Classic (no J & U) \n\r -> ")
 			(int(config_alphabet) <0)
 		except:
 			config_alphabet = 1
 
+		# GET NUMBERING SYSTEM
 		try:
 			config_nmbr_mapping	= input("Select counting system: \n\r [1] Latin (1..9) \n\r [2] Greek (1..9, 10..90, ...)\n\r [3] Incremental (1, 2, 3, ..., n) \n\r [4] Chaldean \n\r -> ")
 			int(config_nmbr_mapping)
 		except:
 			config_nmbr_mapping = 1
 
+		# GET CALCULATION METHOD
 		if config_direction:
 			try:
 				input_calc_method	= input("Select method: \n\r [1] Pythagorean \n\r [2] Pythagorean with Master Numbers \n\r [3] Sum individual numbers (eg. 2+34 => 2+3+4) \n\r -> ")
@@ -431,53 +435,94 @@ while True:
 
 		# SET / GENERATE ALPHABET
 		if int(config_alphabet) == 1:
+			if config_string != '':
+				config_string += ', '
+			config_string += 'Latin characters'
 			alphabet_set = LATIN_SET
-			config_string += 'Latin characters, '
+
 		elif int(config_alphabet) == 2:
+			if config_string != '':
+				config_string += ', '
+			config_string += 'Greek characters'
 			alphabet_set = GREEK_SET
-			config_string += 'Greek characters, '
+
 		elif int(config_alphabet) == 3:	
+			if config_string != '':
+				config_string += ', '
+			config_string += 'Classic latin characters'
 			alphabet_set = LATIN_CLASSIC_SET
-			config_string += 'Classic latin characters, '
+
 		else:
 		# SET DEFAULT LATIN CHARACTERS (& COUNTING)
+			if config_string != '':
+				config_string += ', '
+			config_string += 'Latin characters'	
 			alphabet_set = LATIN_SET
-			config_string += 'Latin characters, '	
+
 
 		if config_calc_method == 1:
+			if config_string != '':
+				config_string += ', '
 			config_string += 'Pythagorean method'
+
 		elif config_calc_method == 2:
+			if config_string != '':
+				config_string += ', '
 			config_string += 'Pythagorean method (break on master nmbr)'
+
 		elif config_calc_method == 3:
+			if config_string != '':
+				config_string += ', '
 			config_string += 'Single digit summing method'
+
 		else:
-			config_calc_method = 1
+			if config_string != '':
+				config_string += ', '
 			config_string += 'Pythagorean method'
+			config_calc_method = 1
+
 
 	# GENERATE CHARACTER TO NUMBER MAPPING
 		if int(config_nmbr_mapping) == 1:
-			config_string += 'Latin counting, '
+			if config_string != '':
+				config_string += ', '
+			config_string += 'Latin counting'
 			for n in range( len(alphabet_set) ):
 				alphabet_set[n][1] = (n%9)+1
 
 		elif int(config_nmbr_mapping) == 2:	
-			config_string += 'Greek counting, '
+			if config_string != '':
+				config_string += ', '
+			config_string += 'Greek counting'
 			for n in range( len(alphabet_set) ):
 				alphabet_set[n][1] = ((n%9)+1) * pow(10,(math.floor((n)/9)))
 
 		elif int(config_nmbr_mapping) == 3:
-			config_string += 'Incremental counting, '
+			if config_string != '':
+				config_string += ', '
+			config_string += 'Incremental counting'
 			for n in range( len(alphabet_set) ):
 				alphabet_set[n][1] = n+1
 
 		elif int(config_nmbr_mapping) == 4:	
 		# SET LATIN CHALDEAN COUNTING
-			config_string += 'Chaldean counting, '
+			if config_string != '':
+				config_string += ', '
+			config_string += 'Chaldean counting'
 			alphabet_set = LATIN_CHALDEAN_SET
 
+		elif int(config_nmbr_mapping) == 5:	
+		# SET LATIN GREEK EQUIVALENT COUNTING
+			if config_string != '':
+				config_string += ', '
+			config_string += 'Chaldean counting'
+			alphabet_set = LATIN_GREEK_SET
+
 		else:
+			if config_string != '':
+				config_string += ', '
+			config_string += 'Incremental counting'
 			alphabet_set = LATIN_SET
-			config_string += 'Incremental counting, '
 
 		alphabet_set_sorted = sorted(alphabet_set, key=itemgetter(1))
 
